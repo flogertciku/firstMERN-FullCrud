@@ -6,6 +6,7 @@ const PersonForm = (props) => {
     const [firstNameVal, setfirstNameVal] = useState("");
     const [lastName, setLastName] = useState("");
     const [lastNameVal, setLastNameVal] = useState("");
+    const [ errors,setErrors] = useState([])
     
     const [val, setVal] = useState([]);
     const {setPeople,people ,setUpdate,update} = props;
@@ -21,6 +22,7 @@ const PersonForm = (props) => {
                 if ( res.data === "ekziston") {
                     setfirstNameVal(res.data)
                 } else if (res.data.errors) {
+                    setErrors(res.data.errors);
                     console.log(res.data.errors)
                     if (res.data.errors.firstName) {
                         setfirstNameVal(res.data.errors.firstName.message)
@@ -33,7 +35,9 @@ const PersonForm = (props) => {
                 }
                 
                 else{
-                
+                    setLastName("")
+                    setFirstName("")
+                    setErrors("");
                 setUpdate(!update)
                 setLastNameVal("")
                 setfirstNameVal("")
@@ -53,14 +57,15 @@ const PersonForm = (props) => {
             
 
                 <label>First Name</label><br/>
-               
+                    {errors.firstName ?  <p>  {errors.firstName.message }</p>  : ""}
                     {firstNameVal ? <p>  {firstNameVal }</p>  : ""}
-                <input type="text" onChange = {(e)=>setFirstName(e.target.value)}/>
+                <input type="text" value={firstName} onChange = {(e)=>setFirstName(e.target.value)}/>
             </p>
             <p>
                 <label>Last Name</label><br/>
+                {errors.lastName ?  <p>  {errors.lastName.message }</p>  : ""}
                 {lastNameVal ? <p>{lastNameVal}</p>  : ""}
-                <input type="text" onChange = {(e)=>setLastName(e.target.value)}/>
+                <input type="text" value={lastName} onChange = {(e)=>setLastName(e.target.value)}/>
             </p>
             <input type="submit"/>
         </form>

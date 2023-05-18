@@ -11,7 +11,7 @@ module.exports.createPerson = async (request, response) => {
         .then(userExists => {
             if (userExists) {
                 // Promise.reject() will activate the .catch() below.
-                return response.json("ekziston");
+                return response.json({errors : {firstName:{message:"this firstname is used before"}}});
             }else{
             Person.create(request.body)
             .then(person => response.json(person))
