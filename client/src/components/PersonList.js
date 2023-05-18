@@ -11,7 +11,7 @@ const PersonList = (props) => {
     useEffect(() => {
         axios.get("http://localhost:8000/api/people")
             .then((res) => {
-                console.log(res.data);
+                // console.log(res.data);
                 setPeople(res.data);
             })
             .catch((err) => {

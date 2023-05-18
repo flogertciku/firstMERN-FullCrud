@@ -5,6 +5,7 @@ const Update = (props) => {
     const { id } = useParams(); //this process is identical to the one we used with our Details.js component
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
+    const [lastNameVal, setLastNameVal] = useState("");
     const navigate = useNavigate();
     // retrieve the current values for this person so we can fill
     // in the form with what is in the db currently
@@ -23,8 +24,17 @@ const Update = (props) => {
             lastName      // this is shortcut syntax for lastName: lastName
         })
             .then(res => {
-                console.log(res);
-                navigate("/home"); // this will take us back to the Main.js
+                if ( res.data === "ekziston") {
+                    setLastNameVal(res.data)
+                } else{
+                    navigate("/");
+                // setPeople([...people, res.data]); 
+            }
+//                 console.log(res); // always console log to get used to tracking your data!
+                console.log("response"+JSON.stringify(res.data) );
+
+
+                 // this will take us back to the Main.js
             })
             .catch(err => console.log(err))
     }
@@ -33,6 +43,7 @@ const Update = (props) => {
             <h1>Update a Person</h1>
             <form onSubmit={updatePerson}>
                 <p>
+                {lastNameVal ? <p>  {lastNameVal }</p>  : ""}
                     <label>First Name</label><br />
                     <input type="text" 
                     name="firstName" 
