@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-const PersonList = (props) => {
-    /* We deconstruct getter and setter which were passed down 
-    via props by the parent component (app.js) to our child 
-    component (PersonList.js). Now we can easily use the getter 
-    and setter without having to write props.getter or props.setter every time: */
-    const { people, setPeople, update,setUpdate } = props;
 
+const PersonList = (props) => {
+     const { people, setPeople, update,setUpdate ,socket} = props;
+   
     useEffect(() => {
         axios.get("http://localhost:8000/api/people")
             .then((res) => {
@@ -17,20 +14,28 @@ const PersonList = (props) => {
             .catch((err) => {
                 console.log(err);
             })
+            socket.on('toClient', (person) => {
+                console.log("ne react therritet ")
+                // setPeople([...people,persons]);
+       
+                setUpdate(!update)
+              });
+              // return () => socket.emit("disconnect");
     }, [update])
 
     const deletePerson = (personId) => {
         axios.delete('http://localhost:8000/api/people/' + personId)
             .then(res => {
-                setUpdate(!update)
+                // setUpdate(!update)
+                socket.emit("toServer", res.data);
             })
             .catch(err => console.log(err))
     }
 
     return (
-        <div className='row'>
+        <div className='col-sm-6'>
             {
-                <table class="table col-sm-6">
+                <table class="table  table-hover">
                 <thead>
                   <tr>
                     <th scope="col">#</th>
@@ -44,16 +49,17 @@ const PersonList = (props) => {
                 
                   <tr key={index}>
                     <th scope="row">{index +1}</th>
-                    <td><Link  to={`/people/${person._id}`}> <p > {person.firstName}</p> </Link></td>
-                    <td>{person.lastName},</td>
-                    <td> <Link to={"/people/edit/" + person._id}>
+                    <td className='align-items-center  '><Link  to={`/people/${person._id}`}> <p > {person.firstName}</p> </Link></td>
+                    <td className='align-items-center  '>{person.lastName}</td>
+                    <td className='row justify-content-around  '> <Link className=' btn-sm btn btn-secondary mb-2' to={"/people/edit/" + person._id}>
                             Edit
                         </Link>
-                        <Link key={index} to={`/people/${person._id}`}> <p >{person.lastName}, {person.firstName}</p> </Link>
-                        <button onClick={(e)=>{deletePerson(person._id)}}>
+
+                        
+                        <button className=' btn btn-danger btn-sm' onClick={(e)=>{deletePerson(person._id)}}>
                             Delete
                         </button>
-</td>
+                    </td>
                   </tr>
                   
                   ))}

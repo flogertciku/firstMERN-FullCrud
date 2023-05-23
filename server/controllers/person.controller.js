@@ -11,17 +11,16 @@ module.exports.createPerson = async (request, response) => {
         .then(userExists => {
             if (userExists) {
                 // Promise.reject() will activate the .catch() below.
-                return response.json({errors : {firstName:{message:"this firstname is used before"}}});
+                return Promise.reject({errors : {firstName:{message:"this firstname is used before"}}});
             }else{
-            Person.create(request.body)
-            .then(person => response.json(person))
-            .catch(err => response.json(err));
+            return Person.create(request.body)
+            
+          
         }
         })
-       
-
-
-  
+        .then(person => response.json(person))
+        .catch(err => response.json(err));
+      
 }
 
 module.exports.getAllPeople = (request, response) => {
